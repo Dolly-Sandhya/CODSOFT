@@ -1,0 +1,103 @@
+CREATE DATABASE BankDB;
+USE BankDB;
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY AUTO_INCREMENT,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    DateOfBirth DATE,
+    Email VARCHAR(100),
+    Phone VARCHAR(15),
+    Address VARCHAR(255),
+    City VARCHAR(50),
+    State VARCHAR(50),
+    ZipCode VARCHAR(10)
+    );
+desc Customers;
+CREATE TABLE Accounts (
+         AccountID INT PRIMARY KEY AUTO_INCREMENT,
+         CustomerID INT,
+         AccountType VARCHAR(50),
+         Balance DECIMAL(15,2),
+         OpenDate DATE,
+         FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+         );
+select * from Accounts;
+CREATE TABLE Transactions (
+     TransactionID INT PRIMARY KEY AUTO_INCREMENT,
+     AccountID INT,
+     TransactionDate DATE,
+     TransactionType VARCHAR(50),
+     Amount DECIMAL(15,2),
+     Description  VARCHAR(255),
+     FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID)
+     );
+select * from Transactions;
+CREATE TABLE Branches (
+     BranchID INT PRIMARY KEY AUTO_INCREMENT,
+     BranchName VARCHAR(100),
+     Address VARCHAR(255),
+     City VARCHAR(50),
+     State VARCHAR(50),
+     ZipCode VARCHAR(10)
+     );
+select * from Branches;
+CREATE TABLE AccountBranch(
+     AccountID INT,
+     BranchID INT,
+     FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID),
+     FOREIGN KEY (BranchID) REFERENCES Branches(BranchID),
+     PRIMARY KEY (AccountID, BranchID)
+     );
+select * from AccountBranch;
+INSERT INTO Customers (FirstName, LastName, DateOfBirth, Email, Phone, Address, City, State, ZipCode) VALUES 
+('Jhon','doe', '1980-01-01', 'john.doe@example.com', '555-1234', '123 Main St', 'Anytown', 'AnyState', '12345'),
+('jane', 'smith', '190-02-20', 'jane.smith@example.com', '555-5678', '456Elm St', 'Othertown','Otherstate', '67890');
+ select * from Customers;    
+ INSERT INTO Accounts (CustomerID, AccountType, Balance , OpenDate) VALUES
+ (1,'Checking', 1000.00, '2023-01-01'),
+ (2, 'savings', 5000.00, '2023-02-01');
+ select * from Accounts;
+ INSERT INTO Transactions (AccountID, TransactionDate, transactionType, Amount, description) VALUES
+ (1, '2023-01-02', 'deposit', 200.00, 'Initial deposit'),
+ (2, '2023-02-05', 'Withdrawal', 100.00, 'ATM Withdrawal');
+ select * from Transactions;
+ INSERT INTO Branches (BranchName, Address,City, State , ZipCode) VALUES
+ ('Main Branch', '789 Oak st', 'anytown', 'AnyState', '12345'),
+ ('Second Branch', '321 Pine St','Othertown', 'otherstate', '67890');
+ Select * from branches; 
+ INSERT INTO AccountBranch (AccountID, BranchID) VALUES
+ (1, 1),
+ (2, 2);
+ select * from AccountBranch;
+ SELECT * FROM Customers;
+ SELECT Accounts.AccountID, Customers.FirstName, Customers.LastName, Accounts.AccountType, Accounts.Balance
+ FROM Accounts
+ JOIN Customers ON accounts.CustomerID=Customers.CustomerID;
+ SELECT * FROM Transactions
+ WHERE AccountID=1;
+ USE BankDB;
+ CREATE TABLE Loans (
+      loan_id INT AUTO_INCREMENT PRIMARY KEY,
+      CustomerID INT,
+      loan_type VARCHAR(50),
+      loan_amount DECIMAL(15,2),
+      interest_rate DECIMAL(5,2),
+      Start_date DATE,
+      End_date DATE,
+      status VARCHAR(50),
+      FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+      );
+select * from Loans;
+INSERT INTO Loans (CustomerID, loan_type, loan_amount, interest_rate, start_date, end_date, status) VALUES
+(1,'Personal', 5000.00, 5.5, '2024-01-01', '2027-01-01', 'active'),
+(2,'mortgage', 150000.00, 3.8, '2023-06-01', '2023-06-01', 'active');
+select * from Loans;
+SELECT * FROM Loans WHERE status='active';
+CREATE UNIQUE INDEX idx_email ON Customers(email);
+ALTER TABLE Accounts ADD CONSTRAINT fk_Customer
+FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID);
+ALTER TABLE Transactions ADD CONSTRAINT fk_Account
+FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID);
+ALTER TABLE Loans ADD CONSTRAINT fk_Loan_Customer
+FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID);
+
